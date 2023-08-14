@@ -14,7 +14,7 @@ E-commerce themed monoliythic server-side application template.
   
 ## Run at your PC
 
-Projeyi klonlayın
+Clone Project
 
 ```bash
   git clone https://github.com/MehmetKaranlik/GO-Backend-Template
