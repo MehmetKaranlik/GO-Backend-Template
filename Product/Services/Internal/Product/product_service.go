@@ -7,7 +7,7 @@ import (
 
 type IProductService interface {
 	CreateProduct(model *Product.Product) error
-	CommentProduct(productId string, comment Product.Comment) error
+	CommentProduct(productId int, comment Product.Comment) error
 }
 
 type ProductService struct {
@@ -18,7 +18,11 @@ func (self ProductService) CreateProduct(model *Product.Product) error {
 	return self.Repository.Create(model)
 }
 
-func (self ProductService) CommentProduct(productId string, comment Product.Comment) error {
-	//TODO implement me
-	panic("implement me")
+func (self ProductService) CommentProduct(productId int, comment Product.Comment) error {
+	product, err := self.Repository.Read(productId)
+	if err != nil {
+		return err
+	}
+	product.Comments = append(product.Comments, comment)
+	return self.Repository.Update(product)
 }

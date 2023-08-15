@@ -23,10 +23,10 @@ func (self V1SellerRoutes) MakeRoutes() []Router.Route {
 
 	routes = append(
 		routes,
-		self.CreateSafeRoute(
+		self.createSafeRoute(
 			ROUTE_PREFIX+"/seller/upload-file",
 			[]string{http.MethodPost},
-			[]Enums.UserRole{Enums.Seller},
+			[]Enums.UserRole{Enums.Seller, Enums.Admin},
 			&File.UploadController{
 				CDN: &CDN.AWSCDNService{},
 			},
@@ -35,10 +35,10 @@ func (self V1SellerRoutes) MakeRoutes() []Router.Route {
 
 	routes = append(
 		routes,
-		self.CreateSafeRoute(
+		self.createSafeRoute(
 			ROUTE_PREFIX+"/seller/product/create",
 			[]string{http.MethodPost},
-			[]Enums.UserRole{Enums.Seller},
+			[]Enums.UserRole{Enums.Seller, Enums.Admin},
 			&Product.ProductCreateController{
 				Service: Product2.ProductService{
 					Repository: Repositories.ProductRepository{
@@ -51,7 +51,7 @@ func (self V1SellerRoutes) MakeRoutes() []Router.Route {
 	return routes
 }
 
-func (self *V1SellerRoutes) CreateSafeRoute(
+func (self *V1SellerRoutes) createSafeRoute(
 	Pattern string,
 	AllowedMethods []string,
 	AllowedRoles []Enums.UserRole,

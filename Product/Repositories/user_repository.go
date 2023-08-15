@@ -21,33 +21,33 @@ type UserRepository struct {
 	Ref *Mongo.MongoCollectionRef
 }
 
-func (u UserRepository) Create(model *User.User) error {
-	_, err := u.Ref.Ref.InsertOne(context.Background(), model, options.InsertOne())
+func (self UserRepository) Create(model *User.User) error {
+	_, err := self.Ref.Ref.InsertOne(context.Background(), model, options.InsertOne())
 	return err
 }
 
-func (u UserRepository) Read(id int) (*User.User, error) {
+func (self UserRepository) Read(id int) (*User.User, error) {
 	filter := bson.M{"id": id}
 	var result User.User
-	err := u.Ref.Ref.FindOne(context.Background(), filter).Decode(&result)
+	err := self.Ref.Ref.FindOne(context.Background(), filter).Decode(&result)
 	return &result, err
 }
 
-func (u UserRepository) Update(model *User.User) error {
+func (self UserRepository) Update(model *User.User) error {
 	filter := bson.M{"id": model.Id}
 	update := bson.M{"$set": model}
-	_, err := u.Ref.Ref.UpdateOne(context.Background(), filter, update, options.Update())
+	_, err := self.Ref.Ref.UpdateOne(context.Background(), filter, update, options.Update())
 	return err
 }
 
-func (u UserRepository) Delete(id int) error {
+func (self UserRepository) Delete(id int) error {
 	filter := bson.M{"id": id}
-	_, err := u.Ref.Ref.DeleteOne(context.Background(), filter, options.Delete())
+	_, err := self.Ref.Ref.DeleteOne(context.Background(), filter, options.Delete())
 	return err
 }
 
-func (u UserRepository) Aggregate(pipeline []interface{}) (*[]User.User, error) {
-	cursor, err := u.Ref.Ref.Aggregate(context.Background(), pipeline, options.Aggregate())
+func (self UserRepository) Aggregate(pipeline []interface{}) (*[]User.User, error) {
+	cursor, err := self.Ref.Ref.Aggregate(context.Background(), pipeline, options.Aggregate())
 	if err != nil {
 		return nil, err
 	}
@@ -56,10 +56,10 @@ func (u UserRepository) Aggregate(pipeline []interface{}) (*[]User.User, error) 
 	return &result, err
 }
 
-func (u UserRepository) SecureAccess(body Auth.LoginBody) *User.User {
+func (self UserRepository) SecureAccess(body Auth.LoginBody) *User.User {
 	filter := bson.M{"email": body.Email}
 	var result User.User
-	err := u.Ref.Ref.FindOne(context.Background(), filter, options.FindOne()).Decode(&result)
+	err := self.Ref.Ref.FindOne(context.Background(), filter, options.FindOne()).Decode(&result)
 	if err != nil {
 		return nil
 	}
@@ -69,10 +69,10 @@ func (u UserRepository) SecureAccess(body Auth.LoginBody) *User.User {
 	return &result
 }
 
-func (u UserRepository) ReadByEntry(email string) *User.User {
+func (self UserRepository) ReadByEntry(email string) *User.User {
 	filter := bson.M{"email": email}
 	var result User.User
-	err := u.Ref.Ref.FindOne(context.Background(), filter, options.FindOne()).Decode(&result)
+	err := self.Ref.Ref.FindOne(context.Background(), filter, options.FindOne()).Decode(&result)
 	if err != nil {
 		return nil
 	}

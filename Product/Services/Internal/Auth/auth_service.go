@@ -13,6 +13,11 @@ import (
 	"time"
 )
 
+type IAuthService interface {
+	Login(reader io.Reader) (*User.User, error)
+	Register(reader io.Reader) (*User.User, error)
+}
+
 type AuthService struct {
 	UserRepository Repositories.IUserRepository
 }

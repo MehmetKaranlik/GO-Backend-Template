@@ -5,7 +5,9 @@ import (
 	"Backend/Core/Middleware"
 	"Backend/Core/Utilities/Helpers"
 	"Backend/Product/Api/V1/Auth"
+	"Backend/Product/Enums"
 	"Backend/Product/Init/Databases/Mongo"
+	"Backend/Product/Middlewares"
 	"Backend/Product/Repositories"
 	Auth2 "Backend/Product/Services/Internal/Auth"
 	"net/http"
@@ -24,37 +26,54 @@ func (self V1Routes) MakeRoutes() []Router.Route {
 	// Auth
 	routes = append(
 		routes,
-		Helpers.MakeJsonRoute(
+		self.createSafeRoute(
 			ROUTE_PREFIX+"/auth/login",
-			&Middleware.MethodCheckerMiddleware{
-				Next: &Auth.LoginController{
-					Service: Auth2.AuthService{
-						UserRepository: Repositories.UserRepository{
-							Ref: Mongo.MongoConnectionItem.Main.Users,
-						},
+			[]string{http.MethodPost},
+			[]Enums.UserRole{Enums.Normal, Enums.Seller, Enums.Admin},
+			Auth.LoginController{
+				Service: Auth2.AuthService{
+					UserRepository: Repositories.UserRepository{
+						Ref: Mongo.MongoConnectionItem.Main.Users,
 					},
 				},
-				AllowedMethods: []string{http.MethodPost},
 			},
 		),
 	)
 
 	routes = append(
 		routes,
-		Helpers.MakeJsonRoute(
+		self.createSafeRoute(
 			ROUTE_PREFIX+"/auth/register",
-			&Middleware.MethodCheckerMiddleware{
-				Next: &Auth.RegisterController{
-					Service: Auth2.AuthService{
-						UserRepository: Repositories.UserRepository{
-							Ref: Mongo.MongoConnectionItem.Main.Users,
-						},
+			[]string{http.MethodPost},
+			[]Enums.UserRole{Enums.Normal, Enums.Seller, Enums.Admin},
+			&Auth.RegisterController{
+				Service: Auth2.AuthService{
+					UserRepository: Repositories.UserRepository{
+						Ref: Mongo.MongoConnectionItem.Main.Users,
 					},
 				},
-				AllowedMethods: []string{http.MethodPost},
 			},
 		),
 	)
 
 	return routes
+}
+
+func (self *V1Routes) createSafeRoute(
+	Pattern string,
+	AllowedMethods []string,
+	AllowedRoles []Enums.UserRole,
+	Next http.Handler,
+) Router.Route {
+	return Helpers.MakeJsonAuthorizedRoute(
+		Pattern,
+		Mongo.MongoConnectionItem.Main,
+		&Middleware.MethodCheckerMiddleware{
+			AllowedMethods: AllowedMethods,
+			Next: &Middlewares.RoleCheckerMiddleware{
+				AllowedRoles: AllowedRoles,
+				Next:         Next,
+			},
+		},
+	)
 }

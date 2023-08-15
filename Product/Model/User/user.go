@@ -21,6 +21,7 @@ type User struct {
 	CreateDate        time.Time
 	UpdateDate        time.Time
 	Role              Enums.UserRole
+	Favorites         []string
 }
 
 func FactoryUser(email string, password []byte, role Enums.UserRole) *User {
@@ -36,5 +37,6 @@ func FactoryUser(email string, password []byte, role Enums.UserRole) *User {
 		CreateDate:   time.Now(),
 		UpdateDate:   time.Now(),
 		Role:         role,
+		Favorites:    []string{},
 	}
 }
