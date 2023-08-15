@@ -2,7 +2,8 @@
 # GO-Backend-Template
 
 E-commerce themed monoliythic server-side application template.
-
+None of the dependencies are required to use this template.
+I used AWS & MongoDB as example, but generic enough to use with any database or cloud provider.
 
 ## Specialities
 
@@ -14,7 +15,7 @@ E-commerce themed monoliythic server-side application template.
   
 ## Run at your PC
 
-Projeyi klonlayın
+Clone Project
 
 ```bash
   git clone https://github.com/MehmetKaranlik/GO-Backend-Template
